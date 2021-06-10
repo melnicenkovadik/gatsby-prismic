@@ -216,6 +216,39 @@ export const query = graphql`
               }
             }
           }
+          ... on PrismicPageBodyBlog {
+            id
+            items {
+              blog_item_title {
+                html
+                raw
+                text
+              }
+              content {
+                html
+                raw
+                text
+              }
+              date
+              item_image {
+                url
+              }
+              short_description {
+                html
+                raw
+                text
+              }
+            }
+            slice_label
+            slice_type
+            primary {
+              blog_title {
+                html
+                raw
+                text
+              }
+            }
+          }
         }
       }
     }
