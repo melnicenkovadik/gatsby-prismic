@@ -3,7 +3,7 @@
   "description": "Multi-language website example with Gatsby.js using Prismic headless CMS",
   "author": "Prismic",
   "engines": {
-    "node": "v16.1.0",
+    "node": "14.x",
     "npm": "7.11.2"
   },
   "dependencies": {
