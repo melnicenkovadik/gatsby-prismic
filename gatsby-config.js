@@ -1,10 +1,6 @@
 const { prismicRepo, releaseID, accessToken } = require('./prismic-configuration')
 const linkResolver = require('./src/utils/linkResolver')
-require('dotenv').config({
-  path: `.env`, // or '.env'
-});
 
-const config = require('gatsby-plugin-config');
 const reponame = process.env.PRISMIC_REPO_NAME || prismicRepo
 const apiKey = process.env.PRISMIC_API_KEY || accessToken
 const prismicReleaseID = process.env.PRISMIC_RELEASE_ID || releaseID

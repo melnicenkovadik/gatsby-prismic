@@ -13,8 +13,6 @@ const MetaMask = ({slice}) => {
         <section className="meta-mask__container">
             <RichText render={slice.primary.meta_title.raw}/>
             <div className="meta-mask">
-
-
                 {
                     !user ?
                         <>

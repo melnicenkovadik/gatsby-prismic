@@ -1,4 +1,3 @@
-import config from 'gatsby-plugin-config';
 import Moralis from "moralis";
 
 
