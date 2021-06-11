@@ -1,6 +1,6 @@
 import React from 'react'
 import RichText from "prismic-reactjs/src/Component";
-import {useAuth} from "./../../hooks/useAuth";
+import useAuth from "./../../hooks/useAuth";
 
 const MetaMask = ({slice}) => {
     const {login, logout, currentUser} = useAuth();

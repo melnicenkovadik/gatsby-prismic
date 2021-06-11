@@ -2,16 +2,28 @@ const path = require('path')
 
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
-exports.onCreateWebpackConfig = ({ actions }) => {
-  actions.setWebpackConfig({
-    plugins: [new NodePolyfillPlugin()],
-  });
+exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
+    if (stage === "build-html" || stage === "develop-html") {
+        actions.setWebpackConfig({
+            module: {
+                rules: [
+                    {
+                        test: /bad-module/,
+                        use: loaders.null(),
+                    },
+                ],
+            },
+        })
+    }
+    actions.setWebpackConfig({
+        plugins: [new NodePolyfillPlugin()],
+    });
 };
 
-exports.createPages = async ({ graphql, actions }) => {
-  const { createPage } = actions
+exports.createPages = async ({graphql, actions}) => {
+    const {createPage} = actions
 
-  const pages = await graphql(`{
+    const pages = await graphql(`{
     allPrismicPage {
       nodes {
         id
@@ -30,19 +42,19 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   }`)
 
-  pages.data.allPrismicPage.nodes.forEach((page) => {
-    createPage({
-      path: page.url,
-      component: path.resolve(__dirname, 'src/templates/Page.js'),
-      context: { ...page },
+    pages.data.allPrismicPage.nodes.forEach((page) => {
+        createPage({
+            path: page.url,
+            component: path.resolve(__dirname, 'src/templates/Page.js'),
+            context: {...page},
+        })
     })
-  })
 
-  pages.data.allPrismicHomepage.nodes.forEach((page) => {
-    createPage({
-      path: page.url,
-      component: path.resolve(__dirname, 'src/templates/Homepage.js'),
-      context: { ...page },
+    pages.data.allPrismicHomepage.nodes.forEach((page) => {
+        createPage({
+            path: page.url,
+            component: path.resolve(__dirname, 'src/templates/Homepage.js'),
+            context: {...page},
+        })
     })
-  })
 }

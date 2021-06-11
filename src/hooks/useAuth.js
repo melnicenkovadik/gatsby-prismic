@@ -1,7 +1,7 @@
 import { navigate } from "gatsby-link";
 import { useMoralis } from "./useMoralis";
 
-export function useAuth() {
+export default function useAuth() {
     const { Moralis } = useMoralis();
     return {
         login: async () => {
