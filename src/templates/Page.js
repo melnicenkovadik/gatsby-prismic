@@ -249,6 +249,18 @@ export const query = graphql`
               }
             }
           }
+          ... on PrismicPageBodyMetamaskContainer {
+            id
+            slice_label
+            slice_type
+            primary {
+              meta_title {
+                html
+                raw
+                text
+              }
+            }
+          }
         }
       }
     }

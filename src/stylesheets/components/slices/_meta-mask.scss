@@ -1,0 +1,18 @@
+.meta-mask {
+  &__login {
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    border: 1px solid white;
+    background-color: black;
+    font-weight: bold;
+    font-size: 22px;
+  }
+}
+
+@media only screen and (min-width: $min-width-l) {
+  .meta-mask {
+
+
+  }
+}
