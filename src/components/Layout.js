@@ -32,9 +32,6 @@ const Layout = ({ children, topMenu, activeDocMeta }) => {
                 href="https://fonts.googleapis.com/icon?family=Material+Icons"
                 rel="stylesheet"
             />
-            <script src="https://cdn.jsdelivr.net/npm/web3-providers-ws@1.3.6/lib/index.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-            <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
         </Helmet>
         <TopMenu topMenu={topMenu} activeDocMeta={activeDocMeta} />
         <main>{children}</main>
