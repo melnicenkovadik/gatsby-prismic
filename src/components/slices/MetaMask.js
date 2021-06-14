@@ -2,7 +2,8 @@ import React from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import useAuth from "./../../hooks/useAuth";
 
-const MetaMask = ({slice}) => {
+const MetaMask = ({slice,pageContext }) => {
+    console.log(pageContext);
     const {login, logout, currentUser} = useAuth();
     const user = currentUser();
     const userAddress = user?.get("ethAddress");

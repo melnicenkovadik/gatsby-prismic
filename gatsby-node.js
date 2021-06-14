@@ -77,3 +77,6 @@ exports.onCreatePage = ({ page, actions }) => {
         createPage(page)
     }
 }
+exports.onCreateNode = ({ node }) => {
+        console.log(node.internal.type)
+}
