@@ -4,6 +4,7 @@
   "author": "Prismic",
   "dependencies": {
     "axios": "^0.21.1",
+    "buffer": "^6.0.3",
     "gatsby": "^3.0.4",
     "gatsby-image": "^3.0.0",
     "gatsby-plugin-create-client-paths": "^3.7.1",

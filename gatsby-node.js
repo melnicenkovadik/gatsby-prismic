@@ -3,12 +3,12 @@ const path = require('path')
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
-    if (stage === "build-html") {
+    if (stage === "build-html" || stage === "develop-html") {
         actions.setWebpackConfig({
             module: {
                 rules: [
                     {
-                        test: /portis\.js|authereum\.js/,
+                        test: /web3-providers-ws/,
                         use: loaders.null(),
                     },
                 ],
