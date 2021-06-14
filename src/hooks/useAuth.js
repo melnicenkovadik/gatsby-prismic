@@ -1,8 +1,7 @@
-import { navigate } from "gatsby-link";
-import { useMoralis } from "./useMoralis";
+import {useMoralis} from "./useMoralis";
 
 export default function useAuth() {
-    const { Moralis } = useMoralis();
+    const {Moralis} = useMoralis();
     return {
         login: async () => {
             try {
@@ -23,7 +22,7 @@ export default function useAuth() {
         },
 
         currentUser: () => {
-            return Moralis?.User.current();
+            return Moralis?.User.current() || null;
         },
     };
 }
