@@ -22,10 +22,5 @@ export default function useAuth() {
             }
         },
 
-        currentUser: () => {
-            if (this.login.user) {
-                return Moralis?.User.current();
-            }
-        },
     };
 }
