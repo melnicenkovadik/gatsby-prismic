@@ -7,6 +7,7 @@ export default function useAuth() {
             try {
                 const user = await Moralis?.Web3.authenticate();
                 window.location.reload()
+                return user
             } catch (e) {
                 console.error(e.message, e);
             }
@@ -22,7 +23,9 @@ export default function useAuth() {
         },
 
         currentUser: () => {
-            return Moralis?.User.current() || null;
+            if (this.login.user) {
+                return Moralis?.User.current();
+            }
         },
     };
 }
