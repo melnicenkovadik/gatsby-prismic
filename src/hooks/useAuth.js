@@ -22,8 +22,8 @@ export default function useAuth() {
         },
 
         currentUser: () => {
-            if (Moralis?.User.current()) {
-                return Moralis?.User.current();
+            if (Moralis?.User?.current()) {
+                return Moralis?.User?.current();
             } else {
                 return null
             }
