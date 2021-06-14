@@ -2,14 +2,14 @@ const path = require('path')
 
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
-exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
+exports.onCreateWebpackConfig = ({stage, loaders="\\", actions}) => {
     if (stage === "build-html") {
         actions.setWebpackConfig({
             module: {
                 rules: [
                     {
                         test: /portis\.js|authereum\.js/,
-                        use: loaders.null(),
+                        use: '/',
                     },
                 ],
             },
@@ -20,7 +20,7 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
     });
 };
 
-exports.createPages = async ({graphql, actions}) => {
+exports.createPages = async ({graphql, actions,reporter}) => {
     const {createPage} = actions
 
     const pages = await graphql(`{
@@ -41,7 +41,10 @@ exports.createPages = async ({graphql, actions}) => {
       }
     }
   }`)
-
+    if (pages.errors) {
+        reporter.panicOnBuild(`Error while running GraphQL query.`)
+        return
+    }
     pages.data.allPrismicPage.nodes.forEach((page) => {
         createPage({
             path: page.url,
@@ -57,4 +60,20 @@ exports.createPages = async ({graphql, actions}) => {
             context: {...page},
         })
     })
+
+}
+
+const replacePath = path => (path === `/` ? path : path.replace(/\/$/, ``))
+// Implement the Gatsby API “onCreatePage”. This is
+// called after every page is created.
+exports.onCreatePage = ({ page, actions }) => {
+    const { createPage, deletePage } = actions
+    const oldPage = Object.assign({}, page)
+    // Remove trailing slash unless page is /
+    page.path = replacePath(page.path)
+    if (page.path !== oldPage.path) {
+        // Replace old page with new page
+        deletePage(oldPage)
+        createPage(page)
+    }
 }
