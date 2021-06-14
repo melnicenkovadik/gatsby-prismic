@@ -34,7 +34,8 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.0.4",
-    "gatsby-link": "^3.7.1"
+    "gatsby-link": "^3.7.1",
+    "webpack": "^5.38.1"
   },
   "license": "Apache-2.0",
   "scripts": {
