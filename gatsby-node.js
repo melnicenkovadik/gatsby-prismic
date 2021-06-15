@@ -15,6 +15,10 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
                         test: /web3-providers-ws/,
                         use: loaders.null(),
                     },
+                    {
+                        test: /graceful-fs/,
+                        use: loaders.null(),
+                    },
                 ],
             },
         });

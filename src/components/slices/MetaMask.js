@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import {CopyToClipboard} from "react-copy-to-clipboard";
 import {MdContentCopy} from "react-icons/md";
@@ -53,7 +53,9 @@ function Web3ConsumerComponent() {
     const [balance, setBalance] = useState("...");
     const [blockNumber, setBlockNumber] = useState("...");
     const [isCopied, setIsCopied] = useState(false);
+    useEffect(() => {
 
+    }, [])
     const onCopyText = () => {
         setIsCopied(true);
         setTimeout(() => {
@@ -82,7 +84,6 @@ function Web3ConsumerComponent() {
                                 setBlockNumber(null);
                             }
                         });
-
                     setText(account)
                     library?.eth.getBalance(account)
                         .then((bal) => setBalance(bal))
