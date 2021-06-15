@@ -74,6 +74,7 @@ function Web3ConsumerComponent() {
                 const {
                     active, connectorName, account, networkId, library
                 } = context;
+                console.log(window.ethereum);
                 if (typeof window !== "undefined") {
                     if (library) {
                         let stale = false;
