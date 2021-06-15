@@ -8,7 +8,7 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
             module: {
                 rules: [
                     {
-                        test: /sadasdsa/,
+                        test: /web3/,
                         use: loaders.null(),
                     },
                 ],

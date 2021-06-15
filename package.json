@@ -8,6 +8,7 @@
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "axios": "^0.21.1",
+    "btoa": "^1.2.1",
     "electron": "^13.1.2",
     "gatsby": "^3.0.4",
     "gatsby-image": "^3.0.0",
