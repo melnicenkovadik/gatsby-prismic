@@ -55,10 +55,26 @@
 
   }
 }
-pre{
+
+pre {
   padding: 15px;
   background: black;
   border-radius: 15px;
   color: white;
   font-weight: 600;
+}
+
+.meta-mask__error-alert {
+  padding: 25px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: red;
+  border-radius: 20px;
+  border: 1px solid red;
+  width: 100%;
+  height: fit-content;
+
+  font-weight: bold;
+
 }
