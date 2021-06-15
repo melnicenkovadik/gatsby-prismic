@@ -7,10 +7,7 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
         actions.setWebpackConfig({
             module: {
                 rules: [
-                    {
-                        test: /web3/,
-                        use: loaders.null(),
-                    },
+
                 ],
             },
         });
