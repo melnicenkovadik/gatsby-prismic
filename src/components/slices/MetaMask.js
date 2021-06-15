@@ -4,7 +4,6 @@ import Web3 from "web3";
 import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
 
 
-
 function Web3DataComponent() {
     let context;
     if (typeof window !== "undefined") {
@@ -85,10 +84,7 @@ function Web3ConsumerComponent() {
 }
 
 const MetaMask = ({slice}) => {
-    let MetaMask =[]
-    if (typeof window !== "undefined"){
-         MetaMask = new Connectors.InjectedConnector({supportedChainIds: [1, 3, 4, 5, 42]});
-    }
+    let MetaMask = new Connectors.InjectedConnector({supportedChainIds: [1, 3, 4, 5, 42]});
     return (
         <section className="meta-mask__container">
             <RichText render={slice.primary.meta_title.raw}/>

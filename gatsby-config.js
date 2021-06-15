@@ -40,7 +40,7 @@ module.exports = {
         {
             resolve: `gatsby-plugin-offline`,
             options: {
-                precachePages: [`/page/metamask/`, `/page/*`],
+                precachePages: [`/page/*`],
             },
         },
         {
