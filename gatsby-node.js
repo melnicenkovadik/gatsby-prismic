@@ -11,6 +11,10 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
                         test: /process/,
                         use: loaders.null(),
                     },
+                    {
+                        test: /web3-providers-ws/,
+                        use: loaders.null(),
+                    },
                 ],
             },
         });
