@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import {CopyToClipboard} from "react-copy-to-clipboard";
 import {MdContentCopy} from "react-icons/md";
@@ -6,12 +6,15 @@ import {GrStatusGood} from "react-icons/all";
 import Web3 from "web3";
 import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
 
-const {
+export const {
     InjectedConnector,
 } = Connectors;
 
 function Web3DataComponent() {
-    const context = useWeb3Context();
+    let context;
+    if (typeof window !== "undefined") {
+        context = useWeb3Context();
+    }
     if (context.error) {
         console.error("Error!");
     }
@@ -53,43 +56,46 @@ function Web3ConsumerComponent() {
     const [balance, setBalance] = useState("...");
     const [blockNumber, setBlockNumber] = useState("...");
     const [isCopied, setIsCopied] = useState(false);
-    useEffect(() => {
+    let onCopyText
+    if (typeof window !== "undefined") {
+        onCopyText = () => {
+            setIsCopied(true);
+            setTimeout(() => {
+                setIsCopied(false);
+            }, 1000);
+        };
+    }
 
-    }, [])
-    const onCopyText = () => {
-        setIsCopied(true);
-        setTimeout(() => {
-            setIsCopied(false);
-        }, 1000);
-    };
 
     return (
         <Web3Consumer>
             {context => {
+
                 const {
                     active, connectorName, account, networkId, library
                 } = context;
-                if (library) {
-                    let stale = false;
-                    library.eth
-                        .getBlockNumber()
-                        .then(r => {
-                            if (!stale) {
-                                setBlockNumber(r);
-                            }
-                        })
-                        .catch(e => {
-                            console.log(e);
-                            if (!stale) {
-                                setBlockNumber(null);
-                            }
-                        });
-                    setText(account)
-                    library?.eth.getBalance(account)
-                        .then((bal) => setBalance(bal))
-                        .catch(error => setBalance(null))
+                if (typeof window !== "undefined") {
+                    if (library) {
+                        let stale = false;
+                        library.eth
+                            .getBlockNumber()
+                            .then(r => {
+                                if (!stale) {
+                                    setBlockNumber(r);
+                                }
+                            })
+                            .catch(e => {
+                                console.log(e);
+                                if (!stale) {
+                                    setBlockNumber(null);
+                                }
+                            });
+                        setText(account)
+                        library?.eth.getBalance(account)
+                            .then((bal) => setBalance(bal))
+                            .catch(error => setBalance(null))
+                    }
                 }
-
                 return (
                     active && (
                         <React.Fragment>
