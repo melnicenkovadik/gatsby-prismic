@@ -11,6 +11,33 @@ const MetaMask = ({slice}) => {
     const {login, logout, currentUser} = useAuth();
     const user = currentUser();
     const userAddress = user?.get("ethAddress");
+    const username = user?.get("username");
+    const updatedAt = user?.get("updatedAt");
+    let date = new Date( Date.parse(updatedAt) );
+    var options = {
+        era: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long',
+        timezone: 'UTC',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+    };
+    function formatDate(date) {
+
+        var dd = date.getDate();
+        if (dd < 10) dd = '0' + dd;
+
+        var mm = date.getMonth() + 1;
+        if (mm < 10) mm = '0' + mm;
+
+        var yy = date.getFullYear() % 100;
+        if (yy < 10) yy = '0' + yy;
+
+        return dd + '.' + mm + '.' + yy;
+    }
 
     const onCopyText = () => {
         setText(userAddress)
@@ -54,6 +81,33 @@ const MetaMask = ({slice}) => {
                                     </div>
                                 </CopyToClipboard>
                             </div>
+                            <div className={'meta-mask__eth-address'}>
+                                <div className={'meta-mask__eth-address__label'}>
+                                    User Name:
+                                </div>
+                                <div className={'meta-mask__eth-address__value'}>
+                                    {username}
+                                </div>
+                                <CopyToClipboard text={text} onCopy={onCopyText}>
+                                    <div className="code-section">
+                                        <span>{isCopied ? <GrStatusGood/> : <MdContentCopy/>}</span>
+                                    </div>
+                                </CopyToClipboard>
+                            </div>
+                            <div className={'meta-mask__eth-address'}>
+                                <div className={'meta-mask__eth-address__label'}>
+                                    Updated At:
+                                </div>
+                                <div className={'meta-mask__eth-address__value'}>
+                                    {  date.toLocaleString("ru", options)}
+                                </div>
+                                <CopyToClipboard text={text} onCopy={onCopyText}>
+                                    <div className="code-section">
+                                        <span>{isCopied ? <GrStatusGood/> : <MdContentCopy/>}</span>
+                                    </div>
+                                </CopyToClipboard>
+                            </div>
+
                             <button
                                 className={'meta-mask__login'}
                                 onClick={() => {
