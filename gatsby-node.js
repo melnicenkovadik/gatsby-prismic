@@ -8,7 +8,7 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
             module: {
                 rules: [
                     {
-                        test: /web3-providers-ws/,
+                        test: /swarm-js/,
                         use: loaders.null(),
                     },
                 ],
