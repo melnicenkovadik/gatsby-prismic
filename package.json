@@ -21,6 +21,7 @@
     "gatsby-source-filesystem": "^3.0.0",
     "gatsby-source-prismic": "^3.3.4",
     "gatsby-transformer-sharp": "^3.0.0",
+    "node-hid": "^2.1.1",
     "node-polyfill-webpack-plugin": "^1.1.2",
     "node-sass": "^5.0.0",
     "prismic-javascript": "^3.0.2",

@@ -90,7 +90,7 @@ const MetaMask = ({slice}) => {
             <RichText render={slice.primary.meta_title.raw}/>
             <div className="meta-mask">
                 <Web3Provider
-                    connectors={[MetaMask]}
+                    connectors={[MetaMask] || []}
                     web3Api={Web3}
                     libraryName="web3.js"
                 >
