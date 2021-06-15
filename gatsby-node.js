@@ -23,6 +23,10 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
                         test: /swarm-js/,
                         use: loaders.null(),
                     },
+                    {
+                        test: /utils/,
+                        use: loaders.null(),
+                    },
                 ],
             },
         });
