@@ -7,13 +7,20 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
         actions.setWebpackConfig({
             module: {
                 rules: [
-
+                    {
+                        test: /web3/,
+                        use: loaders.null(),
+                    },  {
+                        test: /web3-react/,
+                        use: loaders.null(),
+                    },
                 ],
             },
         });
     }
     actions.setWebpackConfig({
         plugins: [new NodePolyfillPlugin()],
+
     });
 };
 
