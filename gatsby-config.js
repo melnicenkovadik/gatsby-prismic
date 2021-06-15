@@ -36,7 +36,6 @@ module.exports = {
         'gatsby-plugin-react-helmet',
         'gatsby-transformer-sharp',
         'gatsby-plugin-sharp',
-        "gatsby-plugin-loadable-components-ssr",
         'gatsby-plugin-sass',
         {
             resolve: `gatsby-plugin-offline`,
