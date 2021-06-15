@@ -1,12 +1,9 @@
-import React, {useState} from 'react'
+import React from 'react'
 import RichText from "prismic-reactjs/src/Component";
-import {CopyToClipboard} from "react-copy-to-clipboard";
-import {MdContentCopy} from "react-icons/md";
-import {GrStatusGood} from "react-icons/all";
 import Web3 from "web3";
 import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
 
-export const {
+const {
     InjectedConnector,
 } = Connectors;
 
