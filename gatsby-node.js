@@ -8,7 +8,7 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
             module: {
                 rules: [
                     {
-                        test: /moralis/,
+                        test: /web3-providers-ws/,
                         use: loaders.null(),
                     },
                 ],
