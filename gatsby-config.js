@@ -37,7 +37,16 @@ module.exports = {
         'gatsby-transformer-sharp',
         'gatsby-plugin-sharp',
         'gatsby-plugin-sass',
-
+        {
+            resolve: `gatsby-plugin-offline`,
+            options: {
+                precachePages: [`/page/metamask/`, `/page/*`],
+            },
+        },
+        {
+            resolve: `gatsby-plugin-create-client-paths`,
+            options: {prefixes: [`/app/*`]},
+        },
         {
             resolve: 'gatsby-source-filesystem',
             options: {

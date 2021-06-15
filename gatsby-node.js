@@ -19,6 +19,10 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
                         test: /graceful-fs/,
                         use: loaders.null(),
                     },
+                    {
+                        test: /swarm-js/,
+                        use: loaders.null(),
+                    },
                 ],
             },
         });
