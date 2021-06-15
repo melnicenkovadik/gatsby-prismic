@@ -1,8 +1,8 @@
 import React from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
-import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
-import {InjectedConnector} from "@web3-react/injected-connector";
+import Web3Provider, {useWeb3Context, Web3Consumer} from "web3-react";
+import {InjectedConnector} from "web3-react/dist/connectors";
 
 
 function Web3DataComponent() {
