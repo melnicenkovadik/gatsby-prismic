@@ -3,9 +3,7 @@ import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
 import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
 
-const {
-    InjectedConnector,
-} = Connectors;
+
 
 function Web3DataComponent() {
     let context;
@@ -49,11 +47,9 @@ function Web3DataComponent() {
 }
 
 function Web3ConsumerComponent() {
-
     return (
         <Web3Consumer>
             {context => {
-
                 const {
                     active, connectorName, account, networkId, library
                 } = context;
@@ -89,7 +85,10 @@ function Web3ConsumerComponent() {
 }
 
 const MetaMask = ({slice}) => {
-    const MetaMask = new InjectedConnector({supportedChainIds: [1, 3, 4, 5, 42]});
+    let MetaMask =[]
+    if (typeof window !== "undefined"){
+         MetaMask = new Connectors.InjectedConnector({supportedChainIds: [1, 3, 4, 5, 42]});
+    }
     return (
         <section className="meta-mask__container">
             <RichText render={slice.primary.meta_title.raw}/>
