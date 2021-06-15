@@ -12,7 +12,9 @@ const MetaMask = ({slice}) => {
     const user = currentUser();
     const userAddress = user?.get("ethAddress");
     const username = user?.get("username");
+
     const updatedAt = user?.get("updatedAt");
+
     const bscBalance = user?.get("balance") === undefined ? 0 : user?.get("balance");
 
     let date = new Date(Date.parse(updatedAt));
