@@ -24,6 +24,7 @@ export const HomepageTemplate = ({ data }) => {
       topMenu={topMenu.data}
       activeDocMeta={activeDoc}
     >
+
       <SliceZone slices={homepage.data.body} />
     </Layout>
   )

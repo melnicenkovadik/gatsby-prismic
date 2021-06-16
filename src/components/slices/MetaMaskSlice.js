@@ -1,9 +1,9 @@
 import React from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
-import Web3Provider, {useWeb3Context, Web3Consumer} from "web3-react";
-import InjectedConnector from "web3-react/dist/connectors/injected";
+import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
 
+const {InjectedConnector} = Connectors
 
 const MetaMask = new InjectedConnector({supportedNetworks: [1, 4]})
 const connectors = {MetaMask}
@@ -69,23 +69,23 @@ function Web3ConsumerComponent() {
                 return (
                     active && (
                         <React.Fragment>
-                            <div className={'meta-mask__eth-address'}>
-                                <div className={'meta-mask__eth-address__label'}>
+                            <div className={'meta-mask__item'}>
+                                <div className={'meta-mask__item__label'}>
                                     Network ID
                                 </div>
-                                <div className={'meta-mask__eth-address__value'}>
-                                    {networkId}
+                                <div className={'meta-mask__item__value'}>
+                                    {networkId || "None"}
                                 </div>
                             </div>
-                            <div className={'meta-mask__eth-address'}>
-                                <div className={'meta-mask__eth-address__label'}>Account</div>
-                                <div className={'meta-mask__eth-address__value'}>
+                            <div className={'meta-mask__item'}>
+                                <div className={'meta-mask__item__label'}>Account</div>
+                                <div className={'meta-mask__item__value'}>
                                     {account || "None"}
                                 </div>
                             </div>
-                            <div className={'meta-mask__eth-address'}>
-                                <div className={'meta-mask__eth-address__label'}>Active Connector</div>
-                                <div className={'meta-mask__eth-address__value'}>
+                            <div className={'meta-mask__item'}>
+                                <div className={'meta-mask__item__label'}>Active Connector</div>
+                                <div className={'meta-mask__item__value'}>
                                     MetaMask
                                 </div>
                             </div>

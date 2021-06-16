@@ -1,5 +1,5 @@
 .meta-mask {
-  &__eth-address {
+  &__item {
     width: 100%;
     min-height: 50px;
     border-radius: 20px;
@@ -9,17 +9,21 @@
     display: flex;
     align-items: center;
     margin: 20px auto;
+    flex-direction: column;
+    overflow: hidden;
 
     &__label {
       background-color: black;
       height: 100%;
-      border-radius: 20px;
+      /* border-radius: 20px; */
       padding: 15px;
       display: flex;
       justify-content: center;
       align-items: center;
       min-width: 195px;
-      width: fit-content;
+      width: -webkit-fit-content;
+      width: -moz-fit-content;
+      width: 100%;
     }
 
     &__value {
@@ -28,6 +32,11 @@
       justify-content: center;
       height: 50px;
       width: 100%;
+      overflow-x: scroll;
+
+    }
+    &__value::-webkit-scrollbar {
+      display: none;
     }
   }
 
@@ -48,11 +57,53 @@
   justify-content: center;
   padding: 15px;
 }
-
-@media only screen and (min-width: $min-width-l) {
+@media (min-width: 768px) {
+  .navbar-container {
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    height: 100vh;
+  }
+  .navbar-container .navbar {
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    height: 100%;
+  }
+  .navbar-container .navbar-collapse {
+    align-items: flex-start;
+  }
+  .navbar-container .nav {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+  .navbar-container .navbar-nav {
+    flex-direction: column !important;
+  }
+}
+@media only screen and (min-width: $min-width-md) {
   .meta-mask {
+    &__item {
+      flex-direction: row;
 
+      &__label {
+        background-color: black;
+        height: 100%;
+        border-radius: 20px;
+        padding: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 195px;
+        width: fit-content;
+      }
 
+      &__value {
+
+      }
+
+    }
   }
 }
 

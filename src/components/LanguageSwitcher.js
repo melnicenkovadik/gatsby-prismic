@@ -24,7 +24,7 @@ const LanguageSwitcher = ({ activeDocMeta }) => {
   }
 
   return (
-    <li className="language-switcher">
+    <div className="language-switcher">
       <select
         value={currentLang}
         onChange={handleLangChange}
@@ -32,7 +32,7 @@ const LanguageSwitcher = ({ activeDocMeta }) => {
         {currentLangOption}
         {alternateLangOptions}
       </select>
-    </li>
+    </div>
   )
 }
 

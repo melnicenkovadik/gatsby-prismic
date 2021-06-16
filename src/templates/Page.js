@@ -25,6 +25,7 @@ export const PageTemplate = ({ data }) => {
       topMenu={topMenu.data}
       activeDocMeta={activeDoc}
     >
+
       <SliceZone slices={page.body} />
     </Layout>
   )
