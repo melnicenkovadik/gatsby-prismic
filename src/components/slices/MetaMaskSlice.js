@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
-import Web3Provider, { useWeb3Context, Web3Consumer} from "web3-react";
+import Web3Provider, {useWeb3Context, Web3Consumer} from "web3-react";
 import {InjectedConnector} from "web3-react/dist/connectors";
 
 
@@ -17,39 +17,40 @@ function Web3DataComponent() {
     if (context.error) {
         console.error("Error!");
     }
-
+    if (localStorage.getItem('account')) {
+        context.setConnector('MetaMask')
+    }
     return (
         <React.Fragment>
             <Web3ConsumerComponent/>
             {context.error && (
                 <p className={'meta-mask__error-alert'}>An error occurred, check the console for details.</p>
             )}
-
             {
                 !context.connectorName ?
-                    Object.keys(connectors).map(name => {
-                        return (
-                            <button
-                                key={name}
-                                className={'meta-mask__login'}
-                                onClick={() => context.setConnector(name || undefined)}
-                            >
-                                LOG IN WITH METAMASK
-                            </button>
-                        )
-                    })
-
+                    <button
+                        key={name}
+                        className={'meta-mask__login'}
+                        onClick={() => {
+                            context.setConnector('MetaMask').then(() => {
+                                localStorage.setItem('account', 'true');
+                            })
+                        }}
+                    >
+                        LOG IN WITH METAMASK
+                    </button>
                     : null
             }
-
             <br/>
             <br/>
 
             {(context.active || (context.error && context.connectorName)) && (
-
                 <button
                     className={'meta-mask__login'}
-                    onClick={() => context.unsetConnector()}
+                    onClick={() => {
+                        localStorage.removeItem('account')
+                        context.unsetConnector()
+                    }}
                 >
                     {context.active ? "Deactivate Connector" : "Reset"}
                 </button>
