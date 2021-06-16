@@ -1,12 +1,12 @@
 import React from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
-import Web3Provider, {useWeb3Context, Web3Consumer} from "web3-react";
-import {Connectors} from 'web3-react'
+import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
 
 const {InjectedConnector} = Connectors
 
 const MetaMask = new InjectedConnector({supportedNetworks: [1, 4]})
+const connectors = {MetaMask}
 
 
 function Web3DataComponent() {
@@ -23,15 +23,20 @@ function Web3DataComponent() {
             {context.error && (
                 <p className={'meta-mask__error-alert'}>An error occurred, check the console for details.</p>
             )}
+
             {
                 !context.connectorName ?
-                    <button
-                        disabled={context.connectorName === '0'}
-                        className={'meta-mask__login'}
-                        onClick={() => context.setConnector('0')}
-                    >
-                        LOG IN WITH METAMASK
-                    </button>
+                    Object.keys(connectors).map(name => {
+                        return (
+                            <button
+                                className={'meta-mask__login'}
+                                onClick={() => context.setConnector(name || undefined)}
+                            >
+                                LOG IN WITH METAMASK
+                            </button>
+                        )
+                    })
+
                     : null
             }
 
@@ -39,6 +44,7 @@ function Web3DataComponent() {
             <br/>
 
             {(context.active || (context.error && context.connectorName)) && (
+
                 <button
                     className={'meta-mask__login'}
                     onClick={() => context.unsetConnector()}
@@ -94,7 +100,7 @@ const MetaMaskSlice = ({slice}) => {
             <RichText render={slice.primary.meta_title.raw}/>
             <div className="meta-mask">
                 <Web3Provider
-                    connectors={[MetaMask]}
+                    connectors={connectors}
                     web3Api={Web3}
                     libraryName="web3.js"
                 >
