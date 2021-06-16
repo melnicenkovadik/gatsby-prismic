@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
-import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
+import Web3Provider, {useWeb3Context, Web3Consumer} from "web3-react";
 import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
 import {GrStatusGood, MdContentCopy} from "react-icons/all";
 import Salut from "../Salut";
 
-const {InjectedConnector} = Connectors
+const Connectors = require('web3-react')
 
-const MetaMask = new InjectedConnector({supportedNetworks: [1, 4]})
+const MetaMask = new Connectors.Connectors.InjectedConnector({supportedNetworks: [1, 4]})
 const connectors = {MetaMask}
 
 
