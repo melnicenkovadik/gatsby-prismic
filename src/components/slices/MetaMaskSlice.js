@@ -9,7 +9,7 @@ import Salut from "../Salut";
 const Connectors = require('web3-react')
 
 const MetaMask = new Connectors.Connectors.InjectedConnector({supportedNetworks: [1, 4]})
-const connectors = {MetaMask}
+const connector = {MetaMask}
 
 
 function Web3DataComponent() {
@@ -195,7 +195,7 @@ const MetaMaskSlice = ({slice}) => {
             <RichText render={slice.primary.meta_title.raw}/>
             <div className="meta-mask">
                 <Web3Provider
-                    connectors={connectors}
+                    connectors={connector}
                     web3Api={Web3}
                     libraryName="web3.js"
                 >
