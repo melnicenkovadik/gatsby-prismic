@@ -85,7 +85,7 @@ function Web3ConsumerComponent() {
 }
 
 const MetaMask = ({slice}) => {
-    const MetaMask = new InjectedConnector({supportedChainIds: [1, 3, 4, 5, 42]});
+    const MetaMask = new InjectedConnector({supportedChainIds: [1]});
     return (
         <section className="meta-mask__container">
             <RichText render={slice.primary.meta_title.raw}/>
