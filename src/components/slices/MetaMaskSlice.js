@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
 import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
@@ -66,21 +66,28 @@ function Web3ConsumerComponent() {
     const [text, setText] = useState("");
     const [balance, setBalance] = useState("...");
     const [blockNumber, setBlockNumber] = useState("...");
-    const [isCopied, setIsCopied] = useState(false);
+    const [getGasPrice, setGetGasPrice] = useState("...");
+    const [getChainId, setGetChainId] = useState("...");
+    const [getCoinbase, setGetCoinbase] = useState("...");
+    const [isCopiedCoinBase, setIsCopiedCoinBase] = useState(false);
+    useEffect(() => {
+        console.log(text)
+    }, [text]);
 
-    const onCopyText = () => {
-        setIsCopied(true);
+    const onCopyText = (text_TYPE) => {
+        setText(text_TYPE)
+        setIsCopiedCoinBase(true);
         setTimeout(() => {
-            setIsCopied(false);
+            setIsCopiedCoinBase(false);
         }, 1000);
     };
     return (
         <Web3Consumer>
             {context => {
                 const {
-                    active, connectorName, account, networkId, library
+                    active, account, networkId, library
                 } = context;
-                console.log(library);
+                // console.log('library', library);
                 if (library) {
                     let stale = false;
                     library.eth
@@ -100,6 +107,20 @@ function Web3ConsumerComponent() {
                     library?.eth.getBalance(account)
                         .then((bal) => setBalance(bal))
                         .catch(error => setBalance(null))
+
+                    library?.eth.getChainId()
+                        .then((e) => setGetChainId(e))
+                        .catch(e => setGetChainId(null))
+
+                    library?.eth.getGasPrice()
+                        .then((e) => setGetGasPrice(e))
+                        .catch(e => setGetGasPrice(null))
+
+                    library?.eth.getCoinbase()
+                        .then((e) => setGetCoinbase(e))
+                        .catch(e => setGetCoinbase(null))
+
+
                 }
                 return (
                     active && (
@@ -118,9 +139,9 @@ function Web3ConsumerComponent() {
                                 <div className={'meta-mask__item__value'}>
                                     {account || "None"}
                                 </div>
-                                <CopyToClipboard text={text} onCopy={onCopyText}>
-                                    <div onClick={() => setText(account)} className="code-section">
-                                        <span>{isCopied ? <GrStatusGood/> : <MdContentCopy/>}</span>
+                                <CopyToClipboard text={text} onCopy={() => onCopyText(account)}>
+                                    <div className="code-section">
+                                        <span>{account === text ? <GrStatusGood/> : <MdContentCopy/>}</span>
                                     </div>
                                 </CopyToClipboard>
                             </div>
@@ -129,7 +150,7 @@ function Web3ConsumerComponent() {
                                     Balance:
                                 </div>
                                 <div className={'meta-mask__item__value'}>
-                                    {balance}
+                                    {balance || "None"}
                                 </div>
 
                             </div>
@@ -138,6 +159,36 @@ function Web3ConsumerComponent() {
                                 <div className={'meta-mask__item__value'}>
                                     MetaMask
                                 </div>
+                            </div>
+
+                            <div className={'meta-mask__item'}>
+                                <div className={'meta-mask__item__label'}>Block Number</div>
+                                <div className={'meta-mask__item__value'}>
+                                    {blockNumber || "None"}
+                                </div>
+                            </div>
+                            <div className={'meta-mask__item'}>
+                                <div className={'meta-mask__item__label'}>Gas Price</div>
+                                <div className={'meta-mask__item__value'}>
+                                    {getGasPrice || "None"}
+                                </div>
+                            </div>
+                            <div className={'meta-mask__item'}>
+                                <div className={'meta-mask__item__label'}>Chain Id</div>
+                                <div className={'meta-mask__item__value'}>
+                                    {getChainId || "None"}
+                                </div>
+                            </div>
+                            <div className={'meta-mask__item'}>
+                                <div className={'meta-mask__item__label'}>Coinbase</div>
+                                <div className={'meta-mask__item__value'}>
+                                    {getCoinbase || "None"}
+                                </div>
+                                <CopyToClipboard text={text} onCopy={() => onCopyText(getCoinbase)}>
+                                    <div className="code-section">
+                                        <span>{isCopiedCoinBase ? <GrStatusGood/> : <MdContentCopy/>}</span>
+                                    </div>
+                                </CopyToClipboard>
                             </div>
                         </React.Fragment>
                     )
