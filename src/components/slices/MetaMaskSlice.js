@@ -70,57 +70,34 @@ function Web3ConsumerComponent() {
     const [getChainId, setGetChainId] = useState("...");
     const [getCoinbase, setGetCoinbase] = useState("...");
     const [isCopiedCoinBase, setIsCopiedCoinBase] = useState(false);
-    useEffect(() => {
-        console.log(text)
-    }, [text]);
-
-    const onCopyText = (text_TYPE) => {
-        setText(text_TYPE)
-        setIsCopiedCoinBase(true);
-        setTimeout(() => {
-            setIsCopiedCoinBase(false);
-        }, 1000);
-    };
+    const [isCopiedAcc, setIsCopiedAcc] = useState(false);
     return (
         <Web3Consumer>
             {context => {
                 const {
                     active, account, networkId, library
                 } = context;
-                // console.log('library', library);
                 if (library) {
-                    let stale = false;
                     library.eth
                         .getBlockNumber()
-                        .then(r => {
-                            if (!stale) {
-                                setBlockNumber(r);
-                            }
-                        })
-                        .catch(e => {
-                            console.log(e);
-                            if (!stale) {
-                                setBlockNumber(null);
-                            }
-                        });
+                        .then(r => setBlockNumber(r))
+                        .catch(error => setBlockNumber("..."))
 
                     library?.eth.getBalance(account)
                         .then((bal) => setBalance(bal))
-                        .catch(error => setBalance(null))
+                        .catch(error => setBalance("..."))
 
                     library?.eth.getChainId()
                         .then((e) => setGetChainId(e))
-                        .catch(e => setGetChainId(null))
+                        .catch(error => setGetChainId("..."))
 
                     library?.eth.getGasPrice()
                         .then((e) => setGetGasPrice(e))
-                        .catch(e => setGetGasPrice(null))
+                        .catch(error => setGetGasPrice("..."))
 
                     library?.eth.getCoinbase()
                         .then((e) => setGetCoinbase(e))
-                        .catch(e => setGetCoinbase(null))
-
-
+                        .catch(error => setGetCoinbase("..."))
                 }
                 return (
                     active && (
@@ -139,9 +116,15 @@ function Web3ConsumerComponent() {
                                 <div className={'meta-mask__item__value'}>
                                     {account || "None"}
                                 </div>
-                                <CopyToClipboard text={text} onCopy={() => onCopyText(account)}>
+                                <CopyToClipboard text={text} onCopy={() => {
+                                    setText(account)
+                                    setIsCopiedCoinBase(true);
+                                    setTimeout(() => {
+                                        setIsCopiedCoinBase(false);
+                                    }, 1000);
+                                }}>
                                     <div className="code-section">
-                                        <span>{account === text ? <GrStatusGood/> : <MdContentCopy/>}</span>
+                                        <span>{isCopiedCoinBase ? <GrStatusGood/> : <MdContentCopy/>}</span>
                                     </div>
                                 </CopyToClipboard>
                             </div>
@@ -184,9 +167,15 @@ function Web3ConsumerComponent() {
                                 <div className={'meta-mask__item__value'}>
                                     {getCoinbase || "None"}
                                 </div>
-                                <CopyToClipboard text={text} onCopy={() => onCopyText(getCoinbase)}>
+                                <CopyToClipboard text={text} onCopy={() => {
+                                    setText(getCoinbase)
+                                    setIsCopiedAcc(true);
+                                    setTimeout(() => {
+                                        setIsCopiedAcc(false);
+                                    }, 1000);
+                                }}>
                                     <div className="code-section">
-                                        <span>{isCopiedCoinBase ? <GrStatusGood/> : <MdContentCopy/>}</span>
+                                        <span>{isCopiedAcc ? <GrStatusGood/> : <MdContentCopy/>}</span>
                                     </div>
                                 </CopyToClipboard>
                             </div>
