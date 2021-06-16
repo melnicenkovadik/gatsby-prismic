@@ -1,7 +1,10 @@
-import React from 'react'
+import React, {useState} from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
 import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
+import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
+import {GrStatusGood, MdContentCopy} from "react-icons/all";
+import Salut from "../Salut";
 
 const {InjectedConnector} = Connectors
 
@@ -60,15 +63,48 @@ function Web3DataComponent() {
 }
 
 function Web3ConsumerComponent() {
+    const [text, setText] = useState("");
+    const [balance, setBalance] = useState("...");
+    const [blockNumber, setBlockNumber] = useState("...");
+    const [isCopied, setIsCopied] = useState(false);
+
+    const onCopyText = () => {
+        setIsCopied(true);
+        setTimeout(() => {
+            setIsCopied(false);
+        }, 1000);
+    };
     return (
         <Web3Consumer>
             {context => {
                 const {
-                    active, account, networkId
+                    active, connectorName, account, networkId, library
                 } = context;
+                console.log(library);
+                if (library) {
+                    let stale = false;
+                    library.eth
+                        .getBlockNumber()
+                        .then(r => {
+                            if (!stale) {
+                                setBlockNumber(r);
+                            }
+                        })
+                        .catch(e => {
+                            console.log(e);
+                            if (!stale) {
+                                setBlockNumber(null);
+                            }
+                        });
+
+                    library?.eth.getBalance(account)
+                        .then((bal) => setBalance(bal))
+                        .catch(error => setBalance(null))
+                }
                 return (
                     active && (
                         <React.Fragment>
+                            <Salut/>
                             <div className={'meta-mask__item'}>
                                 <div className={'meta-mask__item__label'}>
                                     Network ID
@@ -82,6 +118,20 @@ function Web3ConsumerComponent() {
                                 <div className={'meta-mask__item__value'}>
                                     {account || "None"}
                                 </div>
+                                <CopyToClipboard text={text} onCopy={onCopyText}>
+                                    <div onClick={() => setText(account)} className="code-section">
+                                        <span>{isCopied ? <GrStatusGood/> : <MdContentCopy/>}</span>
+                                    </div>
+                                </CopyToClipboard>
+                            </div>
+                            <div className={'meta-mask__item'}>
+                                <div className={'meta-mask__item__label'}>
+                                    Balance:
+                                </div>
+                                <div className={'meta-mask__item__value'}>
+                                    {balance}
+                                </div>
+
                             </div>
                             <div className={'meta-mask__item'}>
                                 <div className={'meta-mask__item__label'}>Active Connector</div>

@@ -27,7 +27,6 @@ const TopMenu = ({topMenu, activeDocMeta}) => {
                     <LanguageSwitcher activeDocMeta={activeDocMeta}/>
                 </div>
             </div>
-
         </header>
     )
 }

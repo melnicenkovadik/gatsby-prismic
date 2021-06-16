@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import RichText from "prismic-reactjs/src/Component";
-import Button from "../button";
-import Modal from "../modal";
+import Button from "../Button";
+import Modal from "../Modal";
 
 const useModal = () => {
     const [isShowing, setIsShowing] = useState(false);
