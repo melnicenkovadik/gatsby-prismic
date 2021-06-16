@@ -1,9 +1,9 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
-import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
+import Web3Provider, { useWeb3Context, Web3Consumer} from "web3-react";
+import {InjectedConnector} from "web3-react/dist/connectors";
 
-const {InjectedConnector} = Connectors
 
 const MetaMask = new InjectedConnector({supportedNetworks: [1, 4]})
 const connectors = {MetaMask}
@@ -17,6 +17,7 @@ function Web3DataComponent() {
     if (context.error) {
         console.error("Error!");
     }
+
     return (
         <React.Fragment>
             <Web3ConsumerComponent/>
@@ -29,6 +30,7 @@ function Web3DataComponent() {
                     Object.keys(connectors).map(name => {
                         return (
                             <button
+                                key={name}
                                 className={'meta-mask__login'}
                                 onClick={() => context.setConnector(name || undefined)}
                             >
@@ -95,6 +97,8 @@ function Web3ConsumerComponent() {
 }
 
 const MetaMaskSlice = ({slice}) => {
+
+
     return (
         <section className="meta-mask__container">
             <RichText render={slice.primary.meta_title.raw}/>

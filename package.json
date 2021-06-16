@@ -47,7 +47,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "build": "gatsby clean && gatsby build",
+    "build": "gatsby build",
     "dev": "gatsby develop",
     "start": "gatsby clean && npm run dev",
     "serve": "gatsby serve",
