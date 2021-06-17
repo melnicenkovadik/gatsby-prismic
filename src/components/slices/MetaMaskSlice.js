@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useEffect} from "react";
 import {UnsupportedChainIdError, useWeb3React, Web3ReactProvider} from "@web3-react/core";
 import {
     NoEthereumProviderError,
@@ -8,12 +8,7 @@ import {UserRejectedRequestError as UserRejectedRequestErrorFrame} from "@web3-r
 import {Web3Provider} from "@ethersproject/providers";
 import {formatEther} from "@ethersproject/units";
 
-import {
-    authereum,
-    frame,
-    injected,
-    torus,
-} from "./connectors";
+import {authereum, frame, injected, torus,} from "./connectors";
 import {useEagerConnect, useInactiveListener} from "./hooks";
 import {Spinner} from "./Spinner";
 import Salut from "../Salut";
@@ -26,7 +21,7 @@ const connectorsByName = {
     Authereum: authereum
 };
 
-function getErrorMessage(error) {
+const getErrorMessage = (error) => {
     if (error instanceof NoEthereumProviderError) {
         return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";
     } else if (error instanceof UnsupportedChainIdError) {
@@ -42,24 +37,13 @@ function getErrorMessage(error) {
     }
 }
 
-function getLibrary(provider) {
+const getLibrary = (provider) => {
     const library = new Web3Provider(provider);
     library.pollingInterval = 8000;
     return library;
 }
 
-function MetaMaskSlice({slice}) {
-    return (
-        <section className="meta-mask__container">
-            <RichText render={slice.primary.meta_title.raw}/>
-            <Web3ReactProvider getLibrary={getLibrary}>
-                <MyComponent />
-            </Web3ReactProvider>
-        </section>
-    );
-}
-
-function MyComponent() {
+const Web3ReactProviderComponent = () => {
     const context = useWeb3React();
     const {
         connector,
@@ -72,29 +56,21 @@ function MyComponent() {
         error
     } = context;
 
-    // handle logic to recognize the connector currently being activated
     const [activatingConnector, setActivatingConnector] = React.useState();
-    React.useEffect(() => {
-        console.log('running')
+    useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
             setActivatingConnector(undefined);
         }
     }, [activatingConnector, connector]);
-
-    // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
     const triedEager = useEagerConnect();
 
     // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
     useInactiveListener(!triedEager || !!activatingConnector);
 
-    // set up block listener
     const [blockNumber, setBlockNumber] = React.useState();
-    React.useEffect(() => {
-        console.log('running')
+    useEffect(() => {
         if (library) {
             let stale = false;
-
-            console.log('fetching block number!!')
             library
                 .getBlockNumber()
                 .then(blockNumber => {
@@ -121,10 +97,8 @@ function MyComponent() {
         }
     }, [library, chainId]);
 
-    // fetch eth balance of the connected account
     const [ethBalance, setEthBalance] = React.useState();
-    React.useEffect(() => {
-        console.log('running')
+    useEffect(() => {
         if (library && account) {
             let stale = false;
 
@@ -148,53 +122,55 @@ function MyComponent() {
         }
     }, [library, account, chainId]);
 
-    // log the walletconnect URI
-
     return (
         <div className={'meta-mask'}>
             <div style={{margin: "0", textAlign: "right"}}>
                 {active ? "🟢" : error ? "🔴" : "🟠"}
             </div>
             {active ? <Salut/> : null}
-            <div className={'meta-mask__item'}>
-                <div className={'meta-mask__item__label'}>Chain Id ⛓
-                </div>
-                <div className={'meta-mask__item__value'}>
-                    {chainId === undefined ? "..." : chainId}
-                </div>
-            </div>
-            <div className={'meta-mask__item'}>
-                <div className={'meta-mask__item__label'}>Block Number 🔢</div>
-                <div className={'meta-mask__item__value'}>
-                    {blockNumber === undefined
-                        ? "..."
-                        : blockNumber === null
-                            ? "Error"
-                            : blockNumber.toLocaleString()}
-                </div>
-            </div>
-            <div className={'meta-mask__item'}>
-                <div className={'meta-mask__item__label'}>Account 🤖</div>
-                <div className={'meta-mask__item__value'}>
-                    {account === undefined
-                        ? "..."
-                        : account === null
-                            ? "None"
-                            : `${account.substring(0, 6)}...${account.substring(
-                                account.length - 4
-                            )}`}
-                </div>
-            </div>
-            <div className={'meta-mask__item'}>
-                <div className={'meta-mask__item__label'}>Balance 💰</div>
-                <div className={'meta-mask__item__value'}>
-                    {ethBalance === undefined
-                        ? "..."
-                        : ethBalance === null
-                            ? "Error"
-                            : `Ξ${parseFloat(formatEther(ethBalance)).toPrecision(4)}`}
-                </div>
-            </div>
+            {active ?
+                <>
+                    <div className={'meta-mask__item'}>
+                        <div className={'meta-mask__item__label'}>Chain Id ⛓
+                        </div>
+                        <div className={'meta-mask__item__value'}>
+                            {chainId === undefined ? "..." : chainId}
+                        </div>
+                    </div>
+                    <div className={'meta-mask__item'}>
+                        <div className={'meta-mask__item__label'}>Block Number 🔢</div>
+                        <div className={'meta-mask__item__value'}>
+                            {blockNumber === undefined
+                                ? "..."
+                                : blockNumber === null
+                                    ? "Error"
+                                    : blockNumber.toLocaleString()}
+                        </div>
+                    </div>
+                    <div className={'meta-mask__item'}>
+                        <div className={'meta-mask__item__label'}>Account 🤖</div>
+                        <div className={'meta-mask__item__value'}>
+                            {account === undefined
+                                ? "..."
+                                : account === null
+                                    ? "None"
+                                    : `${account.substring(0, 6)}...${account.substring(
+                                        account.length - 4
+                                    )}`}
+                        </div>
+                    </div>
+                    <div className={'meta-mask__item'}>
+                        <div className={'meta-mask__item__label'}>Balance 💰</div>
+                        <div className={'meta-mask__item__value'}>
+                            {ethBalance === undefined
+                                ? "..."
+                                : ethBalance === null
+                                    ? "Error"
+                                    : `Ξ${parseFloat(formatEther(ethBalance)).toPrecision(4)}`}
+                        </div>
+                    </div>
+                </> : null}
+
 
             {Object.keys(connectorsByName).map(name => {
                 const currentConnector = connectorsByName[name];
@@ -206,7 +182,7 @@ function MyComponent() {
                 return (
                     <button
                         className={'meta-mask__login'}
-                        style={{position:'relative'}}
+                        style={{position: 'relative'}}
                         disabled={disabled}
                         key={name}
                         onClick={() => {
@@ -282,6 +258,7 @@ function MyComponent() {
                             cursor: "pointer"
                         }}
                         onClick={() => {
+                            console.log('library', library);
                             library
                                 .getSigner(account)
                                 .signMessage("Вадим взламывает Ваши кошельки, оставайтесь в шоке! \n Спасибо :)")
@@ -315,6 +292,16 @@ function MyComponent() {
                 )}
             </div>
         </div>
+    );
+}
+const MetaMaskSlice = ({slice}) => {
+    return (
+        <section className="meta-mask__container">
+            <RichText render={slice.primary.meta_title.raw}/>
+            <Web3ReactProvider getLibrary={getLibrary}>
+                <Web3ReactProviderComponent/>
+            </Web3ReactProvider>
+        </section>
     );
 }
 
