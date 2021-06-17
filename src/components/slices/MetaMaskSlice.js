@@ -7,8 +7,7 @@ import {GrStatusGood, MdContentCopy} from "react-icons/all";
 import Salut from "../Salut";
 
 const {InjectedConnector} = Connectors
-
-const MetaMask = new InjectedConnector({supportedNetworks: [1, 4]})
+const MetaMask = new InjectedConnector()
 const connectors = {MetaMask}
 
 
