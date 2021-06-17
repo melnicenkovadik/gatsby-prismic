@@ -9,15 +9,11 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
                 rules: [
                     {
                         test: /web3/,
-                        use: [
-                            'web3'
-                        ],
+                        use: loaders.null(),
                     },
                     {
-                        test: /@web3-react.injected-connector/,
-                        use: [
-                            '@web3-react/injected-connector'
-                        ]
+                        test: /@web3-react/,
+                        use: loaders.null(),
                     },
                 ],
             },
