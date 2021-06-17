@@ -8,12 +8,13 @@ import {UserRejectedRequestError as UserRejectedRequestErrorFrame} from "@web3-r
 import {Web3Provider} from "@ethersproject/providers";
 import {formatEther} from "@ethersproject/units";
 
-import {
+import loadable from '@loadable/component'
+const {
     authereum,
     frame,
     injected,
     torus,
-} from "./connectors";
+} = loadable(() => import('./connectors'))
 import {useEagerConnect, useInactiveListener} from "./hooks";
 import {Spinner} from "./Spinner";
 import Salut from "../Salut";
@@ -298,20 +299,7 @@ function MyComponent() {
                         Sign Message
                     </button>
                 )}
-                {connector === torus && (
-                    <button
-                        style={{
-                            height: "3rem",
-                            borderRadius: "1rem",
-                            cursor: "pointer"
-                        }}
-                        onClick={() => {
-                            connector.close();
-                        }}
-                    >
-                        Kill Torus Session
-                    </button>
-                )}
+
             </div>
         </div>
     );
