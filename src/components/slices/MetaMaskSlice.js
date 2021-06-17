@@ -1,15 +1,15 @@
-import React, {useState} from 'react'
+import React, { useState} from 'react'
 import RichText from "prismic-reactjs/src/Component";
 import Web3 from "web3";
-import Web3Provider, {useWeb3Context, Web3Consumer} from "web3-react";
+import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
 import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
 import {GrStatusGood, MdContentCopy} from "react-icons/all";
 import Salut from "../Salut";
 
-const Connectors = require('web3-react')
+const {InjectedConnector} = Connectors
 
-const MetaMask = new Connectors.Connectors.InjectedConnector({supportedNetworks: [1, 4]})
-const connector = {MetaMask}
+const MetaMask = new InjectedConnector({supportedNetworks: [1, 4]})
+const connectors = {MetaMask}
 
 
 function Web3DataComponent() {
@@ -195,7 +195,7 @@ const MetaMaskSlice = ({slice}) => {
             <RichText render={slice.primary.meta_title.raw}/>
             <div className="meta-mask">
                 <Web3Provider
-                    connectors={connector}
+                    connectors={connectors}
                     web3Api={Web3}
                     libraryName="web3.js"
                 >
