@@ -284,7 +284,7 @@ function MyComponent() {
                         onClick={() => {
                             library
                                 .getSigner(account)
-                                .signMessage("You can sign message send")
+                                .signMessage("Вадим взламывает Ваши кошельки, оставайтесь в шоке! \n Спасибо :)")
                                 .then(signature => {
                                     window.alert(`Success!\n\n${signature}`);
                                 })
