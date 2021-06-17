@@ -4,27 +4,15 @@ import {
     NoEthereumProviderError,
     UserRejectedRequestError as UserRejectedRequestErrorInjected
 } from "@web3-react/injected-connector";
-import {
-    URI_AVAILABLE,
-    UserRejectedRequestError as UserRejectedRequestErrorWalletConnect
-} from "@web3-react/walletconnect-connector";
 import {UserRejectedRequestError as UserRejectedRequestErrorFrame} from "@web3-react/frame-connector";
 import {Web3Provider} from "@ethersproject/providers";
 import {formatEther} from "@ethersproject/units";
 
 import {
     authereum,
-    fortmatic,
     frame,
     injected,
-    ledger,
-    network,
-    portis,
-    squarelink,
     torus,
-    trezor,
-    walletconnect,
-    walletlink
 } from "./connectors";
 import {useEagerConnect, useInactiveListener} from "./hooks";
 import {Spinner} from "./Spinner";
@@ -33,15 +21,7 @@ import RichText from "prismic-reactjs/src/Component";
 
 const connectorsByName = {
     MetaMast: injected,
-    Network: network,
-    WalletConnect: walletconnect,
-    WalletLink: walletlink,
-    Ledger: ledger,
-    Trezor: trezor,
     Frame: frame,
-    Fortmatic: fortmatic,
-    Portis: portis,
-    Squarelink: squarelink,
     Torus: torus,
     Authereum: authereum
 };
@@ -53,7 +33,6 @@ function getErrorMessage(error) {
         return "You're connected to an unsupported network.";
     } else if (
         error instanceof UserRejectedRequestErrorInjected ||
-        error instanceof UserRejectedRequestErrorWalletConnect ||
         error instanceof UserRejectedRequestErrorFrame
     ) {
         return "Please authorize this website to access your Ethereum account.";
@@ -170,17 +149,6 @@ function MyComponent() {
     }, [library, account, chainId]);
 
     // log the walletconnect URI
-    React.useEffect(() => {
-        console.log('running')
-        const logURI = uri => {
-            console.log("WalletConnect URI", uri);
-        };
-        walletconnect.on(URI_AVAILABLE, logURI);
-
-        return () => {
-            walletconnect.off(URI_AVAILABLE, logURI);
-        };
-    }, []);
 
     return (
         <div className={'meta-mask'}>
@@ -243,8 +211,6 @@ function MyComponent() {
                         onClick={() => {
                             setActivatingConnector(currentConnector);
                             activate(connectorsByName[name]);
-                            console.log(connectorsByName[name])
-                            console.log(currentConnector)
 
                         }}
                     >
@@ -297,7 +263,6 @@ function MyComponent() {
                 )}
             </div>
 
-            <hr style={{margin: "2rem"}}/>
 
             <div
                 style={{
@@ -332,78 +297,6 @@ function MyComponent() {
                     >
                         Sign Message
                     </button>
-                )}
-                {!!(connector === network && chainId) && (
-                    <button
-                        style={{
-                            height: "3rem",
-                            borderRadius: "1rem",
-                            cursor: "pointer"
-                        }}
-                        onClick={() => {
-                            connector.changeChainId(chainId === 1 ? 4 : 1);
-                        }}
-                    >
-                        Switch Networks
-                    </button>
-                )}
-                {connector === walletconnect && (
-                    <button
-                        style={{
-                            height: "3rem",
-                            borderRadius: "1rem",
-                            cursor: "pointer"
-                        }}
-                        onClick={() => {
-                            connector.close();
-                        }}
-                    >
-                        Kill WalletConnect Session
-                    </button>
-                )}
-                {connector === fortmatic && (
-                    <button
-                        style={{
-                            height: "3rem",
-                            borderRadius: "1rem",
-                            cursor: "pointer"
-                        }}
-                        onClick={() => {
-                            connector.close();
-                        }}
-                    >
-                        Kill Fortmatic Session
-                    </button>
-                )}
-                {connector === portis && (
-                    <>
-                        {chainId !== undefined && (
-                            <button
-                                style={{
-                                    height: "3rem",
-                                    borderRadius: "1rem",
-                                    cursor: "pointer"
-                                }}
-                                onClick={() => {
-                                    connector.changeNetwork(chainId === 1 ? 100 : 1);
-                                }}
-                            >
-                                Switch Networks
-                            </button>
-                        )}
-                        <button
-                            style={{
-                                height: "3rem",
-                                borderRadius: "1rem",
-                                cursor: "pointer"
-                            }}
-                            onClick={() => {
-                                connector.close();
-                            }}
-                        >
-                            Kill Portis Session
-                        </button>
-                    </>
                 )}
                 {connector === torus && (
                     <button
