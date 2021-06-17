@@ -8,13 +8,12 @@ import {UserRejectedRequestError as UserRejectedRequestErrorFrame} from "@web3-r
 import {Web3Provider} from "@ethersproject/providers";
 import {formatEther} from "@ethersproject/units";
 
-import loadable from '@loadable/component'
-const {
+import {
     authereum,
     frame,
     injected,
     torus,
-} = loadable(() => import('./connectors'))
+} from "./connectors";
 import {useEagerConnect, useInactiveListener} from "./hooks";
 import {Spinner} from "./Spinner";
 import Salut from "../Salut";
@@ -207,6 +206,7 @@ function MyComponent() {
                 return (
                     <button
                         className={'meta-mask__login'}
+                        style={{position:'relative'}}
                         disabled={disabled}
                         key={name}
                         onClick={() => {
@@ -299,7 +299,20 @@ function MyComponent() {
                         Sign Message
                     </button>
                 )}
-
+                {connector === torus && (
+                    <button
+                        style={{
+                            height: "3rem",
+                            borderRadius: "1rem",
+                            cursor: "pointer"
+                        }}
+                        onClick={() => {
+                            connector.close();
+                        }}
+                    >
+                        Kill Torus Session
+                    </button>
+                )}
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Blog, EmailSignup, FullWidthImage, HeadlineWithButton, InfoWithImage, MyProjects, TextInfo} from './slices'
-import MetaMaskSlice from "./slices/MetaMaskSlice";
+import loadable from '@loadable/component'
 
 const SliceZone = ({slices}) => {
     const sliceComponents = {
@@ -11,7 +11,7 @@ const SliceZone = ({slices}) => {
         text_info: TextInfo,
         my_projects: MyProjects,
         blog: Blog,
-        metamask_container: MetaMaskSlice,
+        metamask_container: loadable(() => import('./slices/MetaMaskSlice')),
     }
 
     return slices.map((slice, index) => {
