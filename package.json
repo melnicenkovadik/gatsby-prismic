@@ -10,7 +10,6 @@
     "@web3-react/authereum-connector": "6.0.6",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "6.0.3",
-    "@web3-react/torus-connector": "6.0.2",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.1",
     "btoa": "^1.2.1",
@@ -39,7 +38,6 @@
     "yarn": "^1.22.10"
   },
   "devDependencies": {
-    "@web3-react/frame-connector": "^6.0.2",
     "eslint": "^7.3.0",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jsx-a11y": "^6.3.1",

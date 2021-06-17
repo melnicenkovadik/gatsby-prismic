@@ -1,0 +1,8 @@
+import {InjectedConnector} from "@web3-react/injected-connector";
+import {AuthereumConnector} from "@web3-react/authereum-connector";
+
+export let injected = new InjectedConnector({
+    supportedChainIds: [1]
+});
+
+export const authereum = new AuthereumConnector({chainId: 1});
