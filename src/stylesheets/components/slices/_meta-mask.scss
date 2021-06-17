@@ -41,11 +41,29 @@
   }
 
   &__login {
+    padding: 5px;
+    margin: 12px;
+    border-radius: 10px;
+    color: white;
+    border: 1px solid white;
+    background-color: #faec51;
+    font-size: 20px;
+  }
+  &__login:disabled {
+    padding: 5px;
+    margin: 12px;
+    border-radius: 10px;
+    color: white;
+    border: 1px solid white;
+    background-color: #cecece;
+    font-size: 20px;
+  }
+  &__logout{
     padding: 15px;
     border-radius: 10px;
     color: white;
     border: 1px solid white;
-    background-color: black;
+    background-color: #ff5e5e;
     font-weight: bold;
     font-size: 22px;
   }

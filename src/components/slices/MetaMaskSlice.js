@@ -1,208 +1,427 @@
-import React, { useState} from 'react'
-import RichText from "prismic-reactjs/src/Component";
-import Web3 from "web3";
-import Web3Provider, {Connectors, useWeb3Context, Web3Consumer} from "web3-react";
-import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
-import {GrStatusGood, MdContentCopy} from "react-icons/all";
+import * as React from "react";
+import {UnsupportedChainIdError, useWeb3React, Web3ReactProvider} from "@web3-react/core";
+import {
+    NoEthereumProviderError,
+    UserRejectedRequestError as UserRejectedRequestErrorInjected
+} from "@web3-react/injected-connector";
+import {
+    URI_AVAILABLE,
+    UserRejectedRequestError as UserRejectedRequestErrorWalletConnect
+} from "@web3-react/walletconnect-connector";
+import {UserRejectedRequestError as UserRejectedRequestErrorFrame} from "@web3-react/frame-connector";
+import {Web3Provider} from "@ethersproject/providers";
+import {formatEther} from "@ethersproject/units";
+
+import {
+    authereum,
+    fortmatic,
+    frame,
+    injected,
+    ledger,
+    network,
+    portis,
+    squarelink,
+    torus,
+    trezor,
+    walletconnect,
+    walletlink
+} from "./connectors";
+import {useEagerConnect, useInactiveListener} from "./hooks";
+import {Spinner} from "./Spinner";
 import Salut from "../Salut";
+import RichText from "prismic-reactjs/src/Component";
 
-const {InjectedConnector} = Connectors
-const MetaMask = new InjectedConnector()
-const connectors = {MetaMask}
+const connectorsByName = {
+    MetaMast: injected,
+    Network: network,
+    WalletConnect: walletconnect,
+    WalletLink: walletlink,
+    Ledger: ledger,
+    Trezor: trezor,
+    Frame: frame,
+    Fortmatic: fortmatic,
+    Portis: portis,
+    Squarelink: squarelink,
+    Torus: torus,
+    Authereum: authereum
+};
 
-
-function Web3DataComponent() {
-    let context;
-    if (typeof window !== "undefined") {
-        context = useWeb3Context();
+function getErrorMessage(error) {
+    if (error instanceof NoEthereumProviderError) {
+        return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";
+    } else if (error instanceof UnsupportedChainIdError) {
+        return "You're connected to an unsupported network.";
+    } else if (
+        error instanceof UserRejectedRequestErrorInjected ||
+        error instanceof UserRejectedRequestErrorWalletConnect ||
+        error instanceof UserRejectedRequestErrorFrame
+    ) {
+        return "Please authorize this website to access your Ethereum account.";
+    } else {
+        console.error(error);
+        return "An unknown error occurred. Check the console for more details.";
     }
-    if (context.error) {
-        console.error("Error!");
-    }
-    if (localStorage.getItem('account')) {
-        context.setConnector('MetaMask')
-    }
-    return (
-        <React.Fragment>
-            <Web3ConsumerComponent/>
-            {context.error && (
-                <p className={'meta-mask__error-alert'}>An error occurred, check the console for details.</p>
-            )}
-            {
-                !context.connectorName ?
-                    <button
-                        key={name}
-                        className={'meta-mask__login'}
-                        onClick={() => {
-                            context.setConnector('MetaMask').then(() => {
-                                localStorage.setItem('account', 'true');
-                            })
-                        }}
-                    >
-                        LOG IN WITH METAMASK
-                    </button>
-                    : null
-            }
-            <br/>
-            <br/>
-
-            {(context.active || (context.error && context.connectorName)) && (
-                <button
-                    className={'meta-mask__login'}
-                    onClick={() => {
-                        localStorage.removeItem('account')
-                        context.unsetConnector()
-                    }}
-                >
-                    {context.active ? "Deactivate Connector" : "Reset"}
-                </button>
-            )}
-        </React.Fragment>
-    );
 }
 
-function Web3ConsumerComponent() {
-    const [text, setText] = useState("");
-    const [balance, setBalance] = useState("...");
-    const [blockNumber, setBlockNumber] = useState("...");
-    const [getGasPrice, setGetGasPrice] = useState("...");
-    const [getChainId, setGetChainId] = useState("...");
-    const [getCoinbase, setGetCoinbase] = useState("...");
-    const [isCopiedCoinBase, setIsCopiedCoinBase] = useState(false);
-    const [isCopiedAcc, setIsCopiedAcc] = useState(false);
-    return (
-        <Web3Consumer>
-            {context => {
-                const {
-                    active, account, networkId, library
-                } = context;
-                if (library) {
-                    library.eth
-                        .getBlockNumber()
-                        .then(r => setBlockNumber(r))
-                        .catch(error => setBlockNumber("..."))
-
-                    library?.eth.getBalance(account)
-                        .then((bal) => setBalance(bal))
-                        .catch(error => setBalance("..."))
-
-                    library?.eth.getChainId()
-                        .then((e) => setGetChainId(e))
-                        .catch(error => setGetChainId("..."))
-
-                    library?.eth.getGasPrice()
-                        .then((e) => setGetGasPrice(e))
-                        .catch(error => setGetGasPrice("..."))
-
-                    library?.eth.getCoinbase()
-                        .then((e) => setGetCoinbase(e))
-                        .catch(error => setGetCoinbase("..."))
-                }
-                return (
-                    active && (
-                        <React.Fragment>
-                            <Salut/>
-                            <div className={'meta-mask__item'}>
-                                <div className={'meta-mask__item__label'}>
-                                    Network ID
-                                </div>
-                                <div className={'meta-mask__item__value'}>
-                                    {networkId || "None"}
-                                </div>
-                            </div>
-                            <div className={'meta-mask__item'}>
-                                <div className={'meta-mask__item__label'}>Account</div>
-                                <div className={'meta-mask__item__value'}>
-                                    {account || "None"}
-                                </div>
-                                <CopyToClipboard text={text} onCopy={() => {
-                                    setText(account)
-                                    setIsCopiedCoinBase(true);
-                                    setTimeout(() => {
-                                        setIsCopiedCoinBase(false);
-                                    }, 1000);
-                                }}>
-                                    <div className="code-section">
-                                        <span>{isCopiedCoinBase ? <GrStatusGood/> : <MdContentCopy/>}</span>
-                                    </div>
-                                </CopyToClipboard>
-                            </div>
-                            <div className={'meta-mask__item'}>
-                                <div className={'meta-mask__item__label'}>
-                                    Balance:
-                                </div>
-                                <div className={'meta-mask__item__value'}>
-                                    {balance || "None"}
-                                </div>
-
-                            </div>
-                            <div className={'meta-mask__item'}>
-                                <div className={'meta-mask__item__label'}>Active Connector</div>
-                                <div className={'meta-mask__item__value'}>
-                                    MetaMask
-                                </div>
-                            </div>
-
-                            <div className={'meta-mask__item'}>
-                                <div className={'meta-mask__item__label'}>Block Number</div>
-                                <div className={'meta-mask__item__value'}>
-                                    {blockNumber || "None"}
-                                </div>
-                            </div>
-                            <div className={'meta-mask__item'}>
-                                <div className={'meta-mask__item__label'}>Gas Price</div>
-                                <div className={'meta-mask__item__value'}>
-                                    {getGasPrice || "None"}
-                                </div>
-                            </div>
-                            <div className={'meta-mask__item'}>
-                                <div className={'meta-mask__item__label'}>Chain Id</div>
-                                <div className={'meta-mask__item__value'}>
-                                    {getChainId || "None"}
-                                </div>
-                            </div>
-                            <div className={'meta-mask__item'}>
-                                <div className={'meta-mask__item__label'}>Coinbase</div>
-                                <div className={'meta-mask__item__value'}>
-                                    {getCoinbase || "None"}
-                                </div>
-                                <CopyToClipboard text={text} onCopy={() => {
-                                    setText(getCoinbase)
-                                    setIsCopiedAcc(true);
-                                    setTimeout(() => {
-                                        setIsCopiedAcc(false);
-                                    }, 1000);
-                                }}>
-                                    <div className="code-section">
-                                        <span>{isCopiedAcc ? <GrStatusGood/> : <MdContentCopy/>}</span>
-                                    </div>
-                                </CopyToClipboard>
-                            </div>
-                        </React.Fragment>
-                    )
-                );
-            }}
-        </Web3Consumer>
-    );
+function getLibrary(provider) {
+    const library = new Web3Provider(provider);
+    library.pollingInterval = 8000;
+    return library;
 }
 
-const MetaMaskSlice = ({slice}) => {
-
-
+function MetaMaskSlice({slice}) {
     return (
         <section className="meta-mask__container">
             <RichText render={slice.primary.meta_title.raw}/>
-            <div className="meta-mask">
-                <Web3Provider
-                    connectors={connectors}
-                    web3Api={Web3}
-                    libraryName="web3.js"
-                >
-                    <Web3DataComponent/>
-                </Web3Provider>
-            </div>
+            <Web3ReactProvider getLibrary={getLibrary}>
+                <MyComponent />
+            </Web3ReactProvider>
         </section>
-    )
+    );
+}
+
+function MyComponent() {
+    const context = useWeb3React();
+    const {
+        connector,
+        library,
+        chainId,
+        account,
+        activate,
+        deactivate,
+        active,
+        error
+    } = context;
+
+    // handle logic to recognize the connector currently being activated
+    const [activatingConnector, setActivatingConnector] = React.useState();
+    React.useEffect(() => {
+        console.log('running')
+        if (activatingConnector && activatingConnector === connector) {
+            setActivatingConnector(undefined);
+        }
+    }, [activatingConnector, connector]);
+
+    // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
+    const triedEager = useEagerConnect();
+
+    // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
+    useInactiveListener(!triedEager || !!activatingConnector);
+
+    // set up block listener
+    const [blockNumber, setBlockNumber] = React.useState();
+    React.useEffect(() => {
+        console.log('running')
+        if (library) {
+            let stale = false;
+
+            console.log('fetching block number!!')
+            library
+                .getBlockNumber()
+                .then(blockNumber => {
+                    if (!stale) {
+                        setBlockNumber(blockNumber);
+                    }
+                })
+                .catch(() => {
+                    if (!stale) {
+                        setBlockNumber(null);
+                    }
+                });
+
+            const updateBlockNumber = blockNumber => {
+                setBlockNumber(blockNumber);
+            };
+            library.on("block", updateBlockNumber);
+
+            return () => {
+                library.removeListener("block", updateBlockNumber);
+                stale = true;
+                setBlockNumber(undefined);
+            };
+        }
+    }, [library, chainId]);
+
+    // fetch eth balance of the connected account
+    const [ethBalance, setEthBalance] = React.useState();
+    React.useEffect(() => {
+        console.log('running')
+        if (library && account) {
+            let stale = false;
+
+            library
+                .getBalance(account)
+                .then(balance => {
+                    if (!stale) {
+                        setEthBalance(balance);
+                    }
+                })
+                .catch(() => {
+                    if (!stale) {
+                        setEthBalance(null);
+                    }
+                });
+
+            return () => {
+                stale = true;
+                setEthBalance(undefined);
+            };
+        }
+    }, [library, account, chainId]);
+
+    // log the walletconnect URI
+    React.useEffect(() => {
+        console.log('running')
+        const logURI = uri => {
+            console.log("WalletConnect URI", uri);
+        };
+        walletconnect.on(URI_AVAILABLE, logURI);
+
+        return () => {
+            walletconnect.off(URI_AVAILABLE, logURI);
+        };
+    }, []);
+
+    return (
+        <div className={'meta-mask'}>
+            <div style={{margin: "0", textAlign: "right"}}>
+                {active ? "🟢" : error ? "🔴" : "🟠"}
+            </div>
+            {active ? <Salut/> : null}
+            <div className={'meta-mask__item'}>
+                <div className={'meta-mask__item__label'}>Chain Id ⛓
+                </div>
+                <div className={'meta-mask__item__value'}>
+                    {chainId === undefined ? "..." : chainId}
+                </div>
+            </div>
+            <div className={'meta-mask__item'}>
+                <div className={'meta-mask__item__label'}>Block Number 🔢</div>
+                <div className={'meta-mask__item__value'}>
+                    {blockNumber === undefined
+                        ? "..."
+                        : blockNumber === null
+                            ? "Error"
+                            : blockNumber.toLocaleString()}
+                </div>
+            </div>
+            <div className={'meta-mask__item'}>
+                <div className={'meta-mask__item__label'}>Account 🤖</div>
+                <div className={'meta-mask__item__value'}>
+                    {account === undefined
+                        ? "..."
+                        : account === null
+                            ? "None"
+                            : `${account.substring(0, 6)}...${account.substring(
+                                account.length - 4
+                            )}`}
+                </div>
+            </div>
+            <div className={'meta-mask__item'}>
+                <div className={'meta-mask__item__label'}>Balance 💰</div>
+                <div className={'meta-mask__item__value'}>
+                    {ethBalance === undefined
+                        ? "..."
+                        : ethBalance === null
+                            ? "Error"
+                            : `Ξ${parseFloat(formatEther(ethBalance)).toPrecision(4)}`}
+                </div>
+            </div>
+
+            {Object.keys(connectorsByName).map(name => {
+                const currentConnector = connectorsByName[name];
+                const activating = currentConnector === activatingConnector;
+                const connected = currentConnector === connector;
+                const disabled =
+                    !triedEager || !!activatingConnector || connected || !!error;
+
+                return (
+                    <button
+                        className={'meta-mask__login'}
+                        disabled={disabled}
+                        key={name}
+                        onClick={() => {
+                            setActivatingConnector(currentConnector);
+                            activate(connectorsByName[name]);
+                            console.log(connectorsByName[name])
+                            console.log(currentConnector)
+
+                        }}
+                    >
+                        <div
+                            style={{
+                                position: "absolute",
+                                top: "0",
+                                left: "0",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                color: "black",
+                                margin: "0 0 0 1rem"
+                            }}
+                        >
+                            {activating && (
+                                <Spinner
+                                    color={"black"}
+                                    style={{height: "25%", marginLeft: "-1rem"}}
+                                />
+                            )}
+
+                        </div>
+                        {name}
+                    </button>
+                );
+            })}
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center"
+                }}
+            >
+                {(active || error) && (
+                    <button
+                        className={'meta-mask__logout'}
+                        onClick={() => {
+                            deactivate();
+                        }}
+                    >
+                        Deactivate
+                    </button>
+                )}
+
+                {!!error && (
+                    <h4 style={{marginTop: "1rem", marginBottom: "0"}}>
+                        {getErrorMessage(error)}
+                    </h4>
+                )}
+            </div>
+
+            <hr style={{margin: "2rem"}}/>
+
+            <div
+                style={{
+                    display: "grid",
+                    gridGap: "1rem",
+                    gridTemplateColumns: "fit-content",
+                    maxWidth: "20rem",
+                    margin: "auto"
+                }}
+            >
+                {!!(library && account) && (
+                    <button
+                        style={{
+                            height: "3rem",
+                            borderRadius: "1rem",
+                            cursor: "pointer"
+                        }}
+                        onClick={() => {
+                            library
+                                .getSigner(account)
+                                .signMessage("You can sign message send")
+                                .then(signature => {
+                                    window.alert(`Success!\n\n${signature}`);
+                                })
+                                .catch(error => {
+                                    window.alert(
+                                        "Failure!" +
+                                        (error && error.message ? `\n\n${error.message}` : "")
+                                    );
+                                });
+                        }}
+                    >
+                        Sign Message
+                    </button>
+                )}
+                {!!(connector === network && chainId) && (
+                    <button
+                        style={{
+                            height: "3rem",
+                            borderRadius: "1rem",
+                            cursor: "pointer"
+                        }}
+                        onClick={() => {
+                            connector.changeChainId(chainId === 1 ? 4 : 1);
+                        }}
+                    >
+                        Switch Networks
+                    </button>
+                )}
+                {connector === walletconnect && (
+                    <button
+                        style={{
+                            height: "3rem",
+                            borderRadius: "1rem",
+                            cursor: "pointer"
+                        }}
+                        onClick={() => {
+                            connector.close();
+                        }}
+                    >
+                        Kill WalletConnect Session
+                    </button>
+                )}
+                {connector === fortmatic && (
+                    <button
+                        style={{
+                            height: "3rem",
+                            borderRadius: "1rem",
+                            cursor: "pointer"
+                        }}
+                        onClick={() => {
+                            connector.close();
+                        }}
+                    >
+                        Kill Fortmatic Session
+                    </button>
+                )}
+                {connector === portis && (
+                    <>
+                        {chainId !== undefined && (
+                            <button
+                                style={{
+                                    height: "3rem",
+                                    borderRadius: "1rem",
+                                    cursor: "pointer"
+                                }}
+                                onClick={() => {
+                                    connector.changeNetwork(chainId === 1 ? 100 : 1);
+                                }}
+                            >
+                                Switch Networks
+                            </button>
+                        )}
+                        <button
+                            style={{
+                                height: "3rem",
+                                borderRadius: "1rem",
+                                cursor: "pointer"
+                            }}
+                            onClick={() => {
+                                connector.close();
+                            }}
+                        >
+                            Kill Portis Session
+                        </button>
+                    </>
+                )}
+                {connector === torus && (
+                    <button
+                        style={{
+                            height: "3rem",
+                            borderRadius: "1rem",
+                            cursor: "pointer"
+                        }}
+                        onClick={() => {
+                            connector.close();
+                        }}
+                    >
+                        Kill Torus Session
+                    </button>
+                )}
+            </div>
+        </div>
+    );
 }
 
 export default MetaMaskSlice
