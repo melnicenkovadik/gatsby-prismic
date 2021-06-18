@@ -10,13 +10,12 @@ import {
     NoEthereumProviderError,
     UserRejectedRequestError as UserRejectedRequestErrorInjected
 } from "@web3-react/injected-connector";
-import {useInactiveListener,useEagerConnect} from "../hooks";
+import {useEagerConnect, useInactiveListener} from "../hooks";
 
 const connectorsByName = {
     MetaMast: injected,
     Authereum: authereum
 };
-
 const getErrorMessage = (error) => {
     if (error instanceof NoEthereumProviderError) {
         return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";
@@ -32,7 +31,12 @@ const getErrorMessage = (error) => {
     }
 }
 export const Web3ReactProviderComponent = () => {
-    const context = useWeb3React();
+    let context
+    if (window.ethereum !== "undefined") {
+        context = useWeb3React();
+    } else {
+        return <div><h1>Use another browser please</h1></div>
+    }
     const {
         connector,
         library,
@@ -43,6 +47,7 @@ export const Web3ReactProviderComponent = () => {
         active,
         error
     } = context;
+
     const [activatingConnector, setActivatingConnector] = useState();
     const [copy, setCopy] = useState(false);
     const [text, setText] = useState(false);
@@ -67,6 +72,7 @@ export const Web3ReactProviderComponent = () => {
     useEffect(() => {
         if (library) {
             let stale = false;
+
             library
                 .getBlockNumber()
                 .then(blockNumber => {
@@ -114,6 +120,28 @@ export const Web3ReactProviderComponent = () => {
             return () => {
                 stale = true;
                 setEthBalance(undefined);
+            };
+        }
+    }, [library, account, chainId]);
+    const [transactionDetail, setTransactionDetail] = useState();
+    useEffect(() => {
+        if (library && account) {
+            let stale = false;
+            library.getBlock("latest")
+                .then((block) => {
+                    if (!stale) {
+                        setTransactionDetail(block);
+
+                    }
+                })
+                .catch(() => {
+                    if (!stale) {
+                        setTransactionDetail(null);
+                    }
+                });
+            return () => {
+                stale = true;
+                setTransactionDetail(undefined);
             };
         }
     }, [library, account, chainId]);
@@ -171,6 +199,56 @@ export const Web3ReactProviderComponent = () => {
                                     ? "Error"
                                     : `Ξ${parseFloat(formatEther(ethBalance)).toPrecision(4)}`}
                         </div>
+                    </div>
+                    <div className={'meta-mask__item'}>
+                        <div className={'meta-mask__item-transaction-container'}>
+                            {
+                                transactionDetail &&
+                                <>
+                                    <h5 style={{textAlign: 'center'}}>Transaction Detail</h5>
+                                    <div className={'meta-mask__item-transaction'}>
+                                        <div className={'meta-mask__item__label'}>Hash</div>
+                                        <div className={'meta-mask__item__value'}>
+                                            {parseFloat(formatEther(transactionDetail.hash)).toPrecision(8)}
+                                        </div>
+                                    </div>
+                                    <div className={'meta-mask__item-transaction'}>
+                                        <div className={'meta-mask__item__label'}>Miner</div>
+                                        <div className={'meta-mask__item__value'}>
+                                            {parseFloat(formatEther(transactionDetail.miner)).toPrecision(8)}
+                                        </div>
+                                    </div>
+                                    <div className={'meta-mask__item-transaction'}>
+                                        <div className={'meta-mask__item__label'}>Number</div>
+                                        <div className={'meta-mask__item__value'}>{transactionDetail.number}</div>
+                                    </div>
+                                    <div className={'meta-mask__item-transaction'}>
+                                        <div className={'meta-mask__item__label'}>Parent Hash</div>
+                                        <div className={'meta-mask__item__value'}>
+                                            {parseFloat(formatEther(transactionDetail.parentHash)).toPrecision(8)}
+                                        </div>
+                                    </div>
+                                    <div className={'meta-mask__item-transaction'}>
+                                        <div className={'meta-mask__item__label'}>Transactions</div>
+                                        <div className={'meta-mask__item__value'}>
+                                            {
+                                                Object.keys(transactionDetail.transactions).map((c,i) => {
+                                                    return (
+                                                        <div key={i}>
+                                                            {parseFloat(formatEther(transactionDetail.transactions[c])).toPrecision(8)}
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                            <div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            }
+
+                        </div>
+
 
                     </div>
                 </> : null}
@@ -263,7 +341,6 @@ export const Web3ReactProviderComponent = () => {
                     </h4>
                 )}
             </div>
-
 
 
         </div>
