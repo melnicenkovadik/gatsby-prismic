@@ -6,7 +6,7 @@ import {Web3ReactProviderComponent} from "../Web3ReactProviderComponent";
 
 
 const getLibrary = (provider) => {
-    const library = new Web3Provider(provider);
+    const library = new Web3Provider(provider );
     library.pollingInterval = 8000;
     return library;
 }
