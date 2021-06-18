@@ -1,9 +1,9 @@
 const path = require('path')
-
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
-exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
+exports.onCreateWebpackConfig = ({stage, loaders, actions,getConfig}) => {
     if (stage === "build-html" || stage === "develop-html") {
+
         actions.setWebpackConfig({
             module: {
                 rules: [
@@ -15,6 +15,7 @@ exports.onCreateWebpackConfig = ({stage, loaders, actions}) => {
                         test: /@web3-react/,
                         use: loaders.null(),
                     },
+
                 ],
             },
         });

@@ -35,6 +35,7 @@
       overflow-x: scroll;
 
     }
+
     &__value::-webkit-scrollbar {
       display: none;
     }
@@ -49,6 +50,7 @@
     background-color: #faec51;
     font-size: 20px;
   }
+
   &__login:disabled {
     padding: 5px;
     border-radius: 10px;
@@ -56,10 +58,11 @@
     border: 1px solid white;
     background-color: #cecece;
     font-size: 20px;
-        margin:15px;
+    margin: 15px;
 
   }
-  &__logout{
+
+  &__logout {
     padding: 15px;
     border-radius: 10px;
     color: white;
@@ -67,12 +70,13 @@
     background-color: #ff5e5e;
     font-weight: bold;
     font-size: 22px;
-        margin:15px;
+    margin: 15px;
 
   }
-  &__btn{
+
+  &__btn {
     padding: 15px;
-    margin:15px;
+    margin: 15px;
     border-radius: 10px;
     color: black;
     border: 1px solid black;
@@ -88,6 +92,7 @@
   justify-content: center;
   padding: 15px;
 }
+
 @media (min-width: 768px) {
   .navbar-container {
     position: sticky;
@@ -113,6 +118,7 @@
     flex-direction: column !important;
   }
 }
+
 @media only screen and (min-width: $min-width-md) {
   .meta-mask {
     &__item {
