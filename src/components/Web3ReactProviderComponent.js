@@ -161,7 +161,8 @@ export const Web3ReactProviderComponent = () => {
         await ethereum.request({
             method: 'eth_sendTransaction',
             params: [transactionParameters],
-        }).then(() => {
+        })
+            .then(() => {
             alert('Transaction success')
         })
             .catch(() => {
@@ -171,31 +172,32 @@ export const Web3ReactProviderComponent = () => {
 
     return (
         <div className={'meta-mask'}>
-            <label for="to">To:</label>
-            <input
-                onChange={(e) => setToTransaction(e.target.value)}
-                className={'meta-mast__input'}
-                name={'to'}
-                value={to}/>
-            <label for="value">Value:</label>
-            <input
-                onChange={(e) => setValueTransaction(e.target.value)}
-                className={'meta-mast__input'}
-                name={'value'}
-                value={value}/>
 
-            <button
-                disabled={disabledTo}
-                className={'meta-mask__btn meta-mask__action-send'}
-                onClick={() => txHash()}>
-                SEND
-            </button>
             <div style={{margin: "0", textAlign: "right"}}>
                 {active ? "🟢" : error ? "🔴" : "🟠"}
             </div>
             {active ? <Salut/> : null}
             {active ?
                 <>
+                    <label htmlFor="to">To:</label>
+                    <input
+                        onChange={(e) => setToTransaction(e.target.value)}
+                        className={'meta-mast__input'}
+                        name={'to'}
+                        value={to}/>
+                    <label htmlFor="value">Value:</label>
+                    <input
+                        onChange={(e) => setValueTransaction(e.target.value)}
+                        className={'meta-mast__input'}
+                        name={'value'}
+                        value={value}/>
+
+                    <button
+                        disabled={disabledTo}
+                        className={'meta-mask__btn meta-mask__action-send'}
+                        onClick={() => txHash()}>
+                        SEND
+                    </button>
                     <div className={'meta-mask__item'}>
                         <div className={'meta-mask__item__label'}>Chain Id ⛓
                         </div>
