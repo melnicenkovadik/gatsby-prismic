@@ -155,9 +155,6 @@ export const Web3ReactProviderComponent = () => {
         from: ethereum.selectedAddress, // must match user's active address.
         value: value
     };
-    useEffect(() => {
-        console.log(to.length);
-    }, [ to]);
 
     const txHash = async () => {
         await ethereum.request({
