@@ -12,6 +12,8 @@ import {
 } from "@web3-react/injected-connector";
 import {useEagerConnect, useInactiveListener} from "../hooks";
 
+const ethereum = window.ethereum
+
 const connectorsByName = {
     MetaMast: injected,
     Authereum: authereum
@@ -145,9 +147,51 @@ export const Web3ReactProviderComponent = () => {
             };
         }
     }, [library, account, chainId]);
+    const [to, setToTransaction] = useState();
+    const [value, setValueTransaction] = useState();
+    const disabledTo = to?.length === 42 ? false : true
+    const transactionParameters = {
+        to: to, // Required except during contract publications.
+        from: ethereum.selectedAddress, // must match user's active address.
+        value: value
+    };
+    useEffect(() => {
+        console.log(to.length);
+    }, [ to]);
+
+    const txHash = async () => {
+        await ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [transactionParameters],
+        }).then(() => {
+            alert('Transaction success')
+        })
+            .catch(() => {
+                alert('Transaction failed to send')
+            })
+    }
 
     return (
         <div className={'meta-mask'}>
+            <label for="to">To:</label>
+            <input
+                onChange={(e) => setToTransaction(e.target.value)}
+                className={'meta-mast__input'}
+                name={'to'}
+                value={to}/>
+            <label for="value">Value:</label>
+            <input
+                onChange={(e) => setValueTransaction(e.target.value)}
+                className={'meta-mast__input'}
+                name={'value'}
+                value={value}/>
+
+            <button
+                disabled={disabledTo}
+                className={'meta-mask__btn meta-mask__action-send'}
+                onClick={() => txHash()}>
+                SEND
+            </button>
             <div style={{margin: "0", textAlign: "right"}}>
                 {active ? "🟢" : error ? "🔴" : "🟠"}
             </div>
@@ -232,7 +276,7 @@ export const Web3ReactProviderComponent = () => {
                                         <div className={'meta-mask__item__label'}>Transactions</div>
                                         <div className={'meta-mask__item__value'}>
                                             {
-                                                Object.keys(transactionDetail.transactions).map((c,i) => {
+                                                Object.keys(transactionDetail.transactions).map((c, i) => {
                                                     return (
                                                         <div key={i}>
                                                             {parseFloat(formatEther(transactionDetail.transactions[c])).toPrecision(8)}

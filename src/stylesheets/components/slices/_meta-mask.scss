@@ -1,3 +1,4 @@
+
 .meta-mask {
   &__item {
     width: 100%;
@@ -198,4 +199,18 @@ pre {
   .meta-mask__item-transaction-container {
     padding: 15px;
   }
+}
+
+.meta-mask__action-send{
+  background-color: blue;
+}
+.meta-mast__input{
+
+  border: 1px solid;
+  border-radius: 10px;
+  height: 40px;
+  padding: 5px;
+}
+button:disabled{
+  background-color:grey;
 }
