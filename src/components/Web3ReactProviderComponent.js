@@ -149,10 +149,11 @@ export const Web3ReactProviderComponent = () => {
     }, [library, account, chainId]);
     const [to, setToTransaction] = useState();
     const [value, setValueTransaction] = useState();
+
     const disabledTo = to?.length === 42 ? false : true
     const transactionParameters = {
         to: to, // Required except during contract publications.
-        from: ethereum.selectedAddress, // must match user's active address.
+        from:ethereum ? ethereum?.selectedAddress : null, // must match user's active address.
         value: value
     };
 
