@@ -14,12 +14,12 @@ import {useEagerConnect, useInactiveListener} from "../hooks";
 import DrizzleComponent from "./DrizzleComponent";
 
 // import drizzle functions and contract artifact
-import { Drizzle, generateStore } from "@drizzle/store";
-import MyStringStore from "./../contracts/MyStringStore.json";
+import {Drizzle} from "@drizzle/store";
+import loadable from "@loadable/component";
 
 // let drizzle know what contracts we want and how to access our test blockchain
 const options = {
-    contracts: [MyStringStore],
+    contracts: [loadable(() => import('./../contracts/MyStringStore.json'))],
     web3: {
         fallback: {
             type: "ws",
